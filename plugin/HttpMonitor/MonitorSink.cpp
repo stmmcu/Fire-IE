@@ -160,6 +160,11 @@ namespace HttpMonitor
 
 		// 查询请求所对应的 CIEHostWindow 对象, 后面随时会用到
 		QueryIEHostWindow();
+		//while (m_pIEHostWindow == NULL)
+		//{
+		//	Sleep(500);
+		//	QueryIEHostWindow();
+		//}
 
 		return hr;
 	}
@@ -268,7 +273,7 @@ namespace HttpMonitor
 		if ( SUCCEEDED(QueryServiceFromClient(&spWindowForBindingUI)) && spWindowForBindingUI )
 		{
 			HWND hwndIEServer = NULL;
-			if ( SUCCEEDED(spWindowForBindingUI->GetWindow(IID_IHttpSecurity, &hwndIEServer)) && IsWindow(hwndIEServer))
+			if (SUCCEEDED(spWindowForBindingUI->GetWindow(IID_IHttpSecurity, &hwndIEServer)) && IsWindow(hwndIEServer))
 			{
 				// 这里得到的 hwndIEServer 情况很复杂, 当 Internet Explorer_Server 窗口还没有来得及建立的时候(刚发出浏览请求的时候),
 				// hwndIEServer 是 Shell Embedding 窗口的句柄; 之后多数情况是 Internet Explorer_Server 窗口的句柄, 有时候也会是
@@ -330,8 +335,12 @@ namespace HttpMonitor
 		return ContentType::TYPE_OTHER;
 	}
 
+	/* ContentPolicyDelegateParams 的静态实例，用于跨线程数据交换 */
+	static Plugin::ContentPolicyDelegateParams s_cpdparams;
+
 	bool MonitorSink::CanLoadContent(ContentType_T aContentType)
 	{
+		/*
 		// stub implementation, filter baidu logo
 		bool result = m_strURL != _T("http://www.baidu.com/img/baidu_sylogo1.gif")
 			&& m_strURL != _T("http://www.baidu.com/img/baidu_jgylogo3.gif")
@@ -341,6 +350,33 @@ namespace HttpMonitor
 			&& m_strURL.Find(_T("http://static.youku.com/v1.0.0223/v/swf")) != 0
 		;
 		TRACE(_T("[CanLoadContent]: [%s] [%s] %s\n"), result ? _T("true") : _T("false"), m_bIsSubRequest ? _T("sub") : _T("main"), m_strURL);
+		return result;
+		*/
+		// JS调用只能在主线程上进行
+		Plugin::ContentPolicyDelegateParams& params = s_cpdparams;
+		// 必须同时获取写锁和读锁才能写入数据
+		params.csWrite.Lock(); params.csRead.Lock();
+
+		params.delegateType = _T("ABP");
+		params.contentType = aContentType;
+		params.contentLocation = m_strURL;
+		params.requestOrigin = m_pIEHostWindow ? m_pIEHostWindow->GetLoadingURL() : _T("");
+		params.result = ContentPolicyResult::ACCEPT;
+
+		params.csRead.Unlock();
+
+		HWND hwnd = m_pIEHostWindow->GetSafeHwnd();
+		if (!hwnd) hwnd = CIEHostWindow::GetAnyUtilsHWND();
+		DWORD_PTR dwResult;
+		if (hwnd)
+			SendMessageTimeout(hwnd, UserMessage::WM_USER_MESSAGE, UserMessage::WPARAM_CONTENT_POLICY_DELEGATE, reinterpret_cast<LPARAM>(&params), SMTO_BLOCK, 100, &dwResult);
+		else
+			TRACE("error!!!\n");
+
+		bool result = params.result == ContentPolicyResult::ACCEPT;
+
+		params.csWrite.Unlock();
+
 		return result;
 	}
 

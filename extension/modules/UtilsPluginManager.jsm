@@ -33,6 +33,7 @@ Cu.import("resource://gre/modules/Services.jsm");
 
 Cu.import(baseURL.spec + "Utils.jsm");
 Cu.import(baseURL.spec + "IECookieManager.jsm");
+Cu.import(baseURL.spec + "ContentPolicyDelegate.jsm");
 
 let UtilsPluginManager = {
   /**
@@ -54,6 +55,7 @@ let UtilsPluginManager = {
     this._handleLoadFailure();
     this._install();
     this._registerHandlers();
+    this._setupContentPolicyDelegate();
   },
   
   uninit: function()
@@ -191,6 +193,28 @@ let UtilsPluginManager = {
     Utils.getHiddenWindow().removeEventListener("IEUserAgentReceived", onIEUserAgentReceived, false);
     Utils.getHiddenWindow().removeEventListener("IESetCookie", onIESetCookie, false);
   },
+  
+  _setupContentPolicyDelegate: function()
+  {
+    let window = Utils.getHiddenWindow().document.defaultView;
+    if (window)
+    {
+      window.FireIEContainer = {
+        callContentPolicyDelegate: function(delegateType, contentType, contentLocation, requestOrigin)
+        {
+          // defaults to accept all requests
+          let result = Ci.nsIContentPolicy.ACCEPT;
+          let delegate = ContentPolicyDelegate.getContentPolicyDelegate(delegateType);
+          if (delegate)
+            result = delegate.invoke(contentType, contentLocation, requestOrigin, window);
+
+          Utils.ERROR("callContentPolicyDelegate: " + (result == Ci.nsIContentPolicy.ACCEPT ? "Accept" : "Reject")
+            + " [" + delegateType + "][" + contentType + "]\n[" + contentLocation + "]\n[" + requestOrigin + "]");
+          return result;
+        }
+      };
+    }
+  }
 };
 
 /** Handler for receiving IE UserAgent from the plugin object */

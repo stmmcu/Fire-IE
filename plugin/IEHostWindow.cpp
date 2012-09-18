@@ -362,6 +362,12 @@ LRESULT CIEHostWindow::OnUserMessage(WPARAM wParam, LPARAM lParam)
 			OnDisplaySecurityInfo();
 		}
 		break;
+	case WPARAM_CONTENT_POLICY_DELEGATE:
+		{
+			Plugin::ContentPolicyDelegateParams* pParams = reinterpret_cast<Plugin::ContentPolicyDelegateParams*>(lParam);
+			OnContentPolicyDelegate(pParams);
+		}
+		break;
 	}
 	return 0;
 }
@@ -1057,6 +1063,20 @@ void CIEHostWindow::OnDisplaySecurityInfo()
 	}
 }
 
+void CIEHostWindow::OnContentPolicyDelegate(Plugin::ContentPolicyDelegateParams* pParams)
+{
+	if (m_pPlugin)
+	{
+		pParams->csRead.Lock();
+
+		HttpMonitor::ContentPolicyResult_T result = m_pPlugin->CallContentPolicyDelegate(
+			pParams->delegateType, pParams->contentType, pParams->contentLocation, pParams->requestOrigin);
+		pParams->result = result;
+
+		pParams->csRead.Unlock();
+	}
+}
+
 void CIEHostWindow::OnUtilsPluginInit()
 {
 	if (m_pPlugin)
@@ -1140,7 +1160,6 @@ void CIEHostWindow::OnProgressChange(long Progress, long ProgressMax)
 	}
 }
 
-
 static inline BOOL UrlCanHandle(LPCTSTR szUrl)
 {
 	// 可能性1: 类似 C:\Documents and Settings\<username>\My Documents\Filename.mht 这样的文件名
@@ -1176,6 +1195,32 @@ static inline BOOL UrlCanHandle(LPCTSTR szUrl)
 	}
 }
 
+void CIEHostWindow::SetLoadingURL(const CString& url)
+{
+	TCHAR* content = new TCHAR[url.GetLength() + 1];
+	LPCTSTR data = url.GetString();
+	_tcsncpy(content, data, url.GetLength() + 1);
+
+	m_csLoadingUrl.Lock();
+	m_strLoadingUrl = content;
+	m_csLoadingUrl.Unlock();
+
+	delete [] content;
+}
+
+CString CIEHostWindow::GetLoadingURL()
+{
+	m_csLoadingUrl.Lock();
+	TCHAR* content = new TCHAR[m_strLoadingUrl.GetLength() + 1];
+	LPCTSTR data = m_strLoadingUrl.GetString();
+	_tcsncpy(content, data, m_strLoadingUrl.GetLength() + 1);
+	m_csLoadingUrl.Unlock();
+
+	CString result = content;
+	delete [] content;
+	return result;
+}
+
 void CIEHostWindow::OnBeforeNavigate2(LPDISPATCH pDisp, VARIANT* URL, VARIANT* Flags, VARIANT* TargetFrameName, VARIANT* PostData, VARIANT* Headers, BOOL* Cancel)
 {
 	// 按Firefox的设置缩放页面
@@ -1207,7 +1252,7 @@ void CIEHostWindow::OnBeforeNavigate2(LPDISPATCH pDisp, VARIANT* URL, VARIANT* F
 	}
 
 	// 设置正在载入的Url
-	m_strLoadingUrl = szUrl;
+	SetLoadingURL(CString(szUrl));
 }
 
 

@@ -96,4 +96,51 @@ namespace HttpMonitor
 		*/
 		const unsigned long TYPE_DTD = 13;
 	}
+
+	typedef short ContentPolicyResult_T;
+
+	namespace ContentPolicyResult
+	{
+		/**
+		* Returned from shouldLoad or shouldProcess if the load or process request
+		* is rejected based on details of the request.
+		*/
+		const short REJECT_REQUEST = -1;
+
+		/**
+		* Returned from shouldLoad or shouldProcess if the load/process is rejected
+		* based solely on its type (of the above flags).
+		*
+		* NOTE that it is not meant to stop future requests for this type--only the
+		* current request.
+		*/
+		const short REJECT_TYPE = -2;
+
+		/**
+		* Returned from shouldLoad or shouldProcess if the load/process is rejected
+		* based on the server it is hosted on or requested from (aContentLocation or
+		* aRequestOrigin), e.g., if you block an IMAGE because it is served from
+		* goatse.cx (even if you don't necessarily block other types from that
+		* server/domain).
+		* 
+		* NOTE that it is not meant to stop future requests for this server--only the
+		* current request.
+		*/
+		const short REJECT_SERVER = -3;
+
+		/**
+		* Returned from shouldLoad or shouldProcess if the load/process is rejected
+		* based on some other criteria. Mozilla callers will handle this like
+		* REJECT_REQUEST; third-party implementors may, for example, use this to
+		* direct their own callers to consult the extra parameter for additional
+		* details.
+		*/
+		const short REJECT_OTHER = -4;
+
+		/**
+		* Returned from shouldLoad or shouldProcess if the load or process request
+		* is not rejected.
+		*/
+		const short ACCEPT = 1;
+	}
 }

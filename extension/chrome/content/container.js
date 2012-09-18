@@ -390,5 +390,20 @@ let FireIEContainer = {};
     {
       return 1;
     }
-  }
+  };
+  FireIEContainer.callContentPolicyDelegate = function(delegateType, contentType, contentLocation, requestOrigin)
+  {
+    // defaults to accept all requests
+    let result = Ci.nsIContentPolicy.ACCEPT;
+    let win = Utils.getChromeWindowFrom(window);
+    if (win && win.gFireIE)
+    {
+      let delegate = win.gFireIE.getContentPolicyDelegate(delegateType);
+      if (delegate)
+        result = delegate.invoke(contentType, contentLocation, requestOrigin, window);
+    }
+    Utils.ERROR("callContentPolicyDelegate: " + (result == Ci.nsIContentPolicy.ACCEPT ? "Accept" : "Reject")
+      + " [" + delegateType + "][" + contentType + "]\n[" + contentLocation + "]\n[" + requestOrigin + "]");
+    return result;
+  };
 })();

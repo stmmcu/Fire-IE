@@ -41,11 +41,21 @@
 #include "npruntime.h"
 #include "PluginApp.h"
 #include "pluginbase.h"
+#include "ContentType.h"
 
 class CIEHostWindow;
 
 namespace Plugin
 {
+	struct ContentPolicyDelegateParams {
+		CString delegateType;
+		HttpMonitor::ContentType_T contentType;
+		CString contentLocation;
+		CString requestOrigin;
+		CCriticalSection csRead, csWrite;
+		/* out */ HttpMonitor::ContentPolicyResult_T result;
+	};
+
 	class CPlugin: public nsPluginBase
 	{
 	public: 
@@ -108,6 +118,11 @@ namespace Plugin
 		 */
 		double GetZoomLevel();
 
+		/** 
+		 * Calls the Content Policy Delegate in container.xhtml, in order to support ABP, AuP, etc.
+		 */
+		HttpMonitor::ContentPolicyResult_T CallContentPolicyDelegate(const CString& delegateType, HttpMonitor::ContentType_T contentType, const CString& contentLocation, const CString& requestOrigin);
+		
 		/**
 		 * Whether we should show status ourselves, i.e. not through NPN_Status
 		 */

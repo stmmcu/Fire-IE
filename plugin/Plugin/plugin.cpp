@@ -394,6 +394,63 @@ namespace Plugin
 		return strParam;
 	}
 
+	HttpMonitor::ContentPolicyResult_T CPlugin::CallContentPolicyDelegate(const CString& delegateType, HttpMonitor::ContentType_T contentType, const CString& contentLocation, const CString& requestOrigin)
+	{
+		HttpMonitor::ContentPolicyResult_T result;
+
+		NPObject* pWindow = NULL;
+		NPVariant vContainer;
+		VOID_TO_NPVARIANT(vContainer);
+		NPVariant vResult;
+		VOID_TO_NPVARIANT(vResult);
+
+		try
+		{
+			if ((NPN_GetValue( m_pNPInstance, NPNVWindowNPObject, &pWindow) != NPERR_NO_ERROR ) || !pWindow )
+			{
+				throw(CString(_T("Cannot get window")));
+			}
+
+			if ((!NPN_GetProperty( m_pNPInstance, pWindow, NPN_GetStringIdentifier (RES_CONTAINER), &vContainer)) || !NPVARIANT_IS_OBJECT (vContainer))
+			{
+				throw(CString(_T("Cannot get window.Container")));
+			}
+			// invoke container.callContentPolicyDelegate(delegateType, contentType, contentLocation, requestOrigin)
+			{
+				NPVariant vArgs[4];
+				STRINGZ_TO_NPVARIANT(CStringToNPStringCharacters(delegateType), vArgs[0]);
+				INT32_TO_NPVARIANT((int32_t)contentType, vArgs[1]);
+				STRINGZ_TO_NPVARIANT(CStringToNPStringCharacters(contentLocation), vArgs[2]);
+				STRINGZ_TO_NPVARIANT(CStringToNPStringCharacters(requestOrigin), vArgs[3]);
+				bool bOK = NPN_Invoke(m_pNPInstance, NPVARIANT_TO_OBJECT(vContainer), NPN_GetStringIdentifier("callContentPolicyDelegate"), vArgs, 4, &vResult);
+				for (int i = 0; i < 4; i++)
+				{
+					NPN_ReleaseVariantValue(&vArgs[i]);
+				}
+				if (!bOK)
+				{
+					throw(CString(_T("Cannot execute window.Container.callContentPolicyDelegate()")));
+				}
+			}
+
+			if (!NPVARIANT_IS_INT32(vResult))
+			{
+				throw(CString(_T("Invalid return value.")));
+			}
+			result = (HttpMonitor::ContentPolicyResult_T)vResult.value.intValue;
+		}
+		catch (CString strMessage)
+		{
+			TRACE(_T("[CPlugin::CallContentPolicyDelegate Exception] %s"), strMessage);
+		}
+
+		if (!NPVARIANT_IS_VOID(vResult))	NPN_ReleaseVariantValue(&vResult);
+		if (!NPVARIANT_IS_VOID(vContainer))	NPN_ReleaseVariantValue(&vContainer);
+		if (pWindow != NULL) NPN_ReleaseObject(pWindow);
+
+		return result;
+	}
+
 	// Get CIEHostWindow ID
 	DWORD CPlugin::GetNavigateWindowId() const
 	{
@@ -544,6 +601,7 @@ namespace Plugin
 			NPN_ReleaseVariantValue(&vEvent);
 			if (!bOK || !NPVARIANT_IS_BOOLEAN(vNotCanceled)) 
 			{
+				NPN_ReleaseVariantValue(&vNotCanceled);
 				throw CString(_T("Cannot dispatchEvent"));
 			}
 			if (NPVARIANT_TO_BOOLEAN(vNotCanceled) != true)

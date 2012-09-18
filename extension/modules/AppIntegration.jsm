@@ -44,6 +44,7 @@ Cu.import(baseURL.spec + "Synchronizer.jsm");
 Cu.import(baseURL.spec + "LightweightTheme.jsm");
 Cu.import(baseURL.spec + "EasyRuleCreator.jsm");
 Cu.import(baseURL.spec + "UtilsPluginManager.jsm");
+Cu.import(baseURL.spec + "ContentPolicyDelegate.jsm");
 
 /**
  * Wrappers for tracked application windows.
@@ -1972,6 +1973,14 @@ WindowWrapper.prototype = {
       this.E("fireie-switch-button-context-menu"),
       this.getURL()
     );
+  },
+  
+  /**
+   * Retrieves the delegate used for content policy evaluation
+   */
+  getContentPolicyDelegate: function(delegateType)
+  {
+    return ContentPolicyDelegate.getContentPolicyDelegate(delegateType);
   }
 
 };

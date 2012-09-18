@@ -23,6 +23,7 @@ along with Fire-IE.  If not, see <http://www.gnu.org/licenses/>.
 namespace Plugin
 {
 	class CPlugin;
+	struct ContentPolicyDelegateParams;
 }
 
 namespace UserMessage
@@ -57,6 +58,7 @@ namespace UserMessage
 	static const WPARAM WPARAM_DISPLAY_SECURITY_INFO = 7;
 	static const WPARAM WPARAM_UTILS_PLUGIN_INIT = 8;
 	static const WPARAM WPARAM_CONTENT_PLUGIN_INIT = 9;
+	static const WPARAM WPARAM_CONTENT_POLICY_DELEGATE = 10;
 
 }
 
@@ -101,8 +103,8 @@ public:
 	/* Get the embedded Internet Explorer_server window */
 	HWND GetInternetExplorerServer() const;
 
-	CString GetLoadingURL() const { return m_strLoadingUrl; }
-	void SetLoadingURL(const CString& value) { m_strLoadingUrl = value; }
+	CString GetLoadingURL();
+	void SetLoadingURL(const CString& value);
 	
 public:
 	
@@ -172,6 +174,7 @@ protected:
 	void OnBack();
 	void OnForward();
 	void OnDisplaySecurityInfo();
+	void OnContentPolicyDelegate(Plugin::ContentPolicyDelegateParams* pParams);
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -336,4 +339,6 @@ protected:
 
 	/** The top-level url currently loading */
 	CString m_strLoadingUrl;
+	/** Ensure the operations on m_strLoadingUrl are thread safe. */
+	CCriticalSection m_csLoadingUrl;
 };
