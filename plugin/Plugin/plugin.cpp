@@ -48,6 +48,7 @@
 #include "ScriptablePluginObject.h"
 #include "json/json.h"
 #include "OS.h"
+#include "comfix.h"
 
 #ifdef DEBUG
 #include "test/test.h"
@@ -58,6 +59,55 @@ using namespace UserMessage;
 
 namespace Plugin
 {
+	static HMODULE WINAPI ModuleFromAddress(PVOID pv)
+	{
+		MEMORY_BASIC_INFORMATION mbi;
+		if(::VirtualQuery(pv, &mbi, sizeof(mbi)) != 0)
+		{
+			return (HMODULE)mbi.AllocationBase;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+
+	static HMODULE GetThisModule()
+	{
+		return ModuleFromAddress(GetThisModule);
+	}
+
+	// Run FireIEHelper.exe to do the COMFix
+	// It is under the same directory as npfireie*.dll
+	static unsigned int callFireIEHelper(void* pUnused)
+	{
+		TCHAR dllFileName[MAX_PATH];
+		HMODULE hThisModule = GetThisModule();
+		if (hThisModule && GetModuleFileName(hThisModule, dllFileName, MAX_PATH))
+		{
+			TCHAR drive[10];
+			TCHAR path[MAX_PATH];
+			if (0 == _tsplitpath_s(dllFileName, drive, 10, path, MAX_PATH, NULL, 0, NULL, 0))
+			{
+				CString helperWorkDir = CString(drive) + path;
+				CString helperFileName = helperWorkDir + _T("FireIEHelper.exe");
+
+				SHELLEXECUTEINFO shExecInfo;
+				shExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+				shExecInfo.fMask = NULL;
+				shExecInfo.hwnd = NULL;
+				shExecInfo.lpVerb = NULL;
+				shExecInfo.lpFile = helperFileName.GetString();
+				shExecInfo.lpParameters = NULL;
+				shExecInfo.lpDirectory = helperWorkDir.GetString();
+				shExecInfo.nShow = SW_SHOW;
+				shExecInfo.hInstApp = NULL;
+
+				ShellExecuteEx(&shExecInfo);
+			}
+		}
+		return 0;
+	}
 
 	CPlugin::CPlugin(const nsPluginCreateData& data)
 		:m_pNPInstance(data.instance),
@@ -706,6 +756,14 @@ namespace Plugin
 #ifdef DEBUG
 		test::doTest();
 #endif
+		if (COMFix::ifNeedFix())
+		{
+			if (Utils::OS::GetVersion() == Utils::OS::VISTA || Utils::OS::GetVersion() == Utils::OS::WIN7)
+				AfxBeginThread(callFireIEHelper, NULL);
+			else
+				COMFix::doFix();
+		}
+
 		CString strEventType = _T("IEUtilsPluginInitialized");
 		CString strDetail = _T("");
 		FireEvent(strEventType, strDetail);

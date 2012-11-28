@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin", "plugin\Plugin.vcx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleMaker", "RuleMaker\RuleMaker.csproj", "{4C78DF1A-0C4C-4E39-BA77-5024E5B94CDF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FireIEHelper", "FireIEHelper\FireIEHelper.vcxproj", "{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -29,6 +31,14 @@ Global
 		{4C78DF1A-0C4C-4E39-BA77-5024E5B94CDF}.Release|Win32.Build.0 = Release|x86
 		{4C78DF1A-0C4C-4E39-BA77-5024E5B94CDF}.Release|x64.ActiveCfg = Release|x86
 		{4C78DF1A-0C4C-4E39-BA77-5024E5B94CDF}.Release|x64.Build.0 = Release|x86
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Debug|Win32.Build.0 = Debug|Win32
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Debug|x64.ActiveCfg = Debug|Win32
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Debug|x64.Build.0 = Debug|Win32
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Release|Win32.ActiveCfg = Release|Win32
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Release|Win32.Build.0 = Release|Win32
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Release|x64.ActiveCfg = Release|Win32
+		{5B806FB0-9EEA-4C75-AE6D-41F42CC0A273}.Release|x64.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

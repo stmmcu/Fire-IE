@@ -99,6 +99,7 @@ Desktop.ini
 ## Project Specific
 ############
 /extension/plugins/npfireie*
+/extension/plugins/FireIEHelper.exe
 /test/
 /fireie*.xpi
 /ReleaseNotes.txt
