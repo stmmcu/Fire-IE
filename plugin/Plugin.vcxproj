@@ -316,8 +316,10 @@ buildxpi64.bat</Command>
     <ClCompile Include="abp\Matcher.cpp" />
     <ClCompile Include="abp\RAIILock.cpp" />
     <ClCompile Include="BrowserHook\AtlDepHook.cpp" />
+    <ClCompile Include="BrowserHook\COMFixHook.cpp" />
     <ClCompile Include="BrowserHook\GestureHandler.cpp" />
     <ClCompile Include="BrowserHook\GestureHandlerImpl.cpp" />
+    <ClCompile Include="BrowserHook\HookImpl.cpp" />
     <ClCompile Include="BrowserHook\WindowMessageHook.cpp" />
     <ClCompile Include="IEControlSite.cpp" />
     <ClCompile Include="IECtrl.cpp" />
@@ -408,7 +410,9 @@ buildxpi64.bat</Command>
     <ClInclude Include="abp\TList.h" />
     <ClInclude Include="abp\TriBool.h" />
     <ClInclude Include="BrowserHook\AtlDepHook.h" />
+    <ClInclude Include="BrowserHook\COMFixHook.h" />
     <ClInclude Include="BrowserHook\GestureHandler.h" />
+    <ClInclude Include="BrowserHook\HookImpl.h" />
     <ClInclude Include="BrowserHook\WindowMessageHook.h" />
     <ClInclude Include="PrefManager.h" />
     <ClInclude Include="HttpMonitor\ContentType.h" />

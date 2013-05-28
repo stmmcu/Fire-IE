@@ -16,23 +16,15 @@ along with Fire-IE.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "StdAfx.h"
 #include "AtlDepHook.h"
-
-#include "external\MinHook.h"
-#if defined _M_X64
-#pragma comment(lib, "external\\MinHook.64.lib")
-#elif defined _M_IX86
-#pragma comment(lib, "external\\MinHook.32.lib")
-#endif
-
-#define DEFINE_FUNCTION_INFO(module, func) {module, #func, NULL, (PVOID *)&func##_original, (PVOID)func##_hook, FALSE}
+#include "HookImpl.h"
 
 namespace BrowserHook
 {
 	BOOL FixThunk(LONG dwLong);
 
-	LONG (WINAPI *SetWindowLongA_original)(HWND hWnd, int nIndex, LONG dwNewLong) = NULL;
+	static LONG (WINAPI *SetWindowLongA_original)(HWND hWnd, int nIndex, LONG dwNewLong) = NULL;
 
-	LONG WINAPI SetWindowLongA_hook(HWND hWnd, int nIndex, LONG dwNewLong) 
+	static LONG WINAPI SetWindowLongA_hook(HWND hWnd, int nIndex, LONG dwNewLong) 
 	{
 		TRACE("[fireie] SetWindowLongA_hook\n");
 
@@ -44,9 +36,9 @@ namespace BrowserHook
 		return SetWindowLongA_original(hWnd, nIndex, dwNewLong);
 	}
 
-	LONG (WINAPI *SetWindowLongW_original)(HWND hWnd, int nIndex, LONG dwNewLong) = NULL;
+	static LONG (WINAPI *SetWindowLongW_original)(HWND hWnd, int nIndex, LONG dwNewLong) = NULL;
 
-	LONG WINAPI SetWindowLongW_hook(HWND hWnd, int nIndex, LONG dwNewLong) 
+	static LONG WINAPI SetWindowLongW_hook(HWND hWnd, int nIndex, LONG dwNewLong) 
 	{
 		TRACE("[fireie] SetWindowLongW_hook\n");
 
@@ -58,23 +50,11 @@ namespace BrowserHook
 		return SetWindowLongW_original(hWnd, nIndex, dwNewLong);
 	}
 
-	struct FunctionInfo
-	{
-		LPCSTR  szFunctionModule;
-		LPCSTR  szFunctionName;
-		PVOID   pTargetFunction;
-		PVOID*  ppOriginalFunction;
-		PVOID   pHookFunction;
-		BOOL    bSucceeded;
-	};
-
-	FunctionInfo s_Functions[] = 
+	static FunctionInfo s_Functions[] = 
 	{
 		DEFINE_FUNCTION_INFO("user32.dll", SetWindowLongA),
 		DEFINE_FUNCTION_INFO("user32.dll", SetWindowLongW),
 	};
-
-	const size_t s_FunctionsCount = sizeof(s_Functions)/sizeof(FunctionInfo);
 
 	// WindowProc thunks 
 #if !defined(_M_X64)
@@ -157,61 +137,16 @@ namespace BrowserHook
 
 	void AtlDepHook::Install(void)
 	{
-		if (MH_Initialize() != MH_OK)
-		{
+		if (!Do_MH_Initialize())
 			return;
-		}
 
-		for(int i = 0; i < s_FunctionsCount; ++i)
-		{
-			FunctionInfo& info = s_Functions[i];
-
-			if (info.bSucceeded) 
-			{
-				continue;
-			}
-
-			HMODULE hModule = ::LoadLibraryA(info.szFunctionModule);
-			if (!hModule)
-			{
-				DWORD dwErrorCode = ::GetLastError();
-				TRACE("[fireie] Cannot LoadLibraryA(%s)! GetLastError: %d",info.szFunctionModule, dwErrorCode);
-				continue;
-			}
-
-			info.pTargetFunction = GetProcAddress(hModule, info.szFunctionName);
-			if (info.pTargetFunction == NULL)
-			{
-				TRACE("[fireie] Cannot GetProcAddress of %s", info.szFunctionName);
-				continue;
-			}
-			if (MH_CreateHook(info.pTargetFunction, info.pHookFunction, info.ppOriginalFunction) != MH_OK)
-			{
-				TRACE("[fireie] MH_CreateHook failed! Module: %s  Function: %s", info.szFunctionModule, info.szFunctionName);
-				continue;
-			}
-			// Enable the hook
-			if (MH_EnableHook(info.pTargetFunction) != MH_OK)
-			{
-				TRACE("[fireie] MH_EnableHook failed! Module: %s  Function: %s", info.szFunctionModule, info.szFunctionName);
-				continue;
-			}
-			info.bSucceeded = TRUE;
-		}
-
+		Do_MH_HookFunctions(s_Functions);
 	}
 
 	void AtlDepHook::Uninstall(void)
 	{
-		for(int i = 0; i < s_FunctionsCount; ++i)
-		{
-			FunctionInfo& info = s_Functions[i];
-			if (*info.ppOriginalFunction != NULL)
-			{
-				MH_DisableHook(info.pTargetFunction);
-			}
-		}
+		Do_MH_UnhookFunctions(s_Functions);
 
-		MH_Uninitialize();
+		Do_MH_Uninitialize();
 	}
 }

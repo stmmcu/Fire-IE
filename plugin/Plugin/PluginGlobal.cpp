@@ -3,6 +3,7 @@
 #include "HttpMonitorAPP.h"
 #include "WindowMessageHook.h"
 #include "AtlDepHook.h"
+#include "COMFixHook.h"
 #include "OS.h"
 #include "App.h"
 
@@ -32,7 +33,8 @@ namespace Plugin
 		{ _T("FEATURE_VIEWLINKEDWEBOC_IS_UNSAFE"), 1 },
 		{ _T("FEATURE_IFRAME_MAILTO_THRESHOLD"), 1 },
 		{ _T("FEATURE_RESTRICT_RES_TO_LMZ"), 1 },
-		{ _T("FEATURE_SHIM_MSHELP_COMBINE"), 0 }
+		{ _T("FEATURE_SHIM_MSHELP_COMBINE"), 0 },
+		{ _T("FEATURE_ACTIVEX_REPURPOSEDETECTION"), 1 },
 	};
 	static const int g_nRegOnlyFeatures = sizeof(g_RegOnlyFeatures) / sizeof(g_RegOnlyFeatures[0]);
 	static const CString g_strSubkey = _T("SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\");
@@ -121,7 +123,7 @@ namespace Plugin
 			FEATURE_BLOCK_INPUT_PROMPTS,		// 允许弹窗阻止程序拦截javascript prompt
 			FEATURE_MIME_HANDLING,				// MIME Type 处理
 			FEATURE_UNC_SAVEDFILECHECK,			// UNC路径MotW处理
-			FEATURE_HTTP_USERNAME_PASSWORD_DISABLE // 禁止在http协议的URL中包含用户名密码
+			FEATURE_HTTP_USERNAME_PASSWORD_DISABLE, // 禁止在http协议的URL中包含用户名密码
 		};
 		int n = sizeof(features) / sizeof(INTERNETFEATURELIST);
 		for (int i = 0; i < n; i++)
@@ -136,13 +138,14 @@ namespace Plugin
 			BrowserHook::AtlDepHook::s_instance.Install();
 		}
 #endif
+		BrowserHook::COMFixHook::s_instance.Install();
 		return NPERR_NO_ERROR;
 	}
 
 	// global shutdown
 	void NS_PluginShutdown()
 	{
-
+		BrowserHook::COMFixHook::s_instance.Uninstall();
 #ifndef _M_X64
 		if (OS::GetVersion() == OS::WIN7 || OS::GetVersion() == OS::VISTA)
 		{

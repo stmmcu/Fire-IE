@@ -115,6 +115,12 @@
     <ClCompile Include="Utils\File.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="BrowserHook\COMFixHook.cpp">
+      <Filter>BrowserHook</Filter>
+    </ClCompile>
+    <ClCompile Include="BrowserHook\HookImpl.cpp">
+      <Filter>BrowserHook</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IECtrl.h" />
@@ -260,6 +266,12 @@
     </ClInclude>
     <ClInclude Include="Utils\File.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BrowserHook\COMFixHook.h">
+      <Filter>BrowserHook</Filter>
+    </ClInclude>
+    <ClInclude Include="BrowserHook\HookImpl.h">
+      <Filter>BrowserHook</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
