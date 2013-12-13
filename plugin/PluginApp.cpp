@@ -67,6 +67,9 @@ CPluginApp::CPluginApp()
 
 CPluginApp theApp;
 
+// Initialize ATL module
+CComModule theModule;
+extern __declspec(selectany) CAtlModule* _pAtlModule = &theModule;
 
 /* ----------------------------------------------------------------------------
 	Function: SetClassName		

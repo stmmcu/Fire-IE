@@ -84,7 +84,7 @@ namespace Plugin
 		{
 			return NPERR_GENERIC_ERROR;
 		}
-		if (spSession->RegisterNameSpace(g_spCFHTTP, CLSID_NULL, L"http", 0, 0, 0) != S_OK)
+		if (spSession->RegisterNameSpace(g_spCFHTTP, CLSID_HttpProtocol, L"http", 0, NULL, 0) != S_OK)
 		{
 			return NPERR_GENERIC_ERROR;
 		}
@@ -92,7 +92,7 @@ namespace Plugin
 		{
 			return NPERR_GENERIC_ERROR;
 		}
-		if (spSession->RegisterNameSpace(g_spCFHTTPS, CLSID_NULL, L"https", 0, 0, 0) != S_OK)
+		if (spSession->RegisterNameSpace(g_spCFHTTPS, CLSID_HttpSProtocol, L"https", 0, NULL, 0) != S_OK)
 		{
 			return NPERR_GENERIC_ERROR;
 		}
