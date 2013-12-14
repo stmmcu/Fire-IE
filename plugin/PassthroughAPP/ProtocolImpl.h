@@ -104,6 +104,12 @@ class ATL_NO_VTABLE IInternetProtocolImpl :
 	public IWinInetCacheHints2
 {
 public:
+	IInternetProtocolImpl() {
+		TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::__constructor__()\n"), GetCurrentThreadId(), this);
+	}
+	~IInternetProtocolImpl() {
+		TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::__destructor__()\n"), GetCurrentThreadId(), this);
+	}
 	void ReleaseAll();
 
 	DECLARE_GET_TARGET_UNKNOWN(m_spInternetProtocolUnk)

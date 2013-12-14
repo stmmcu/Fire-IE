@@ -196,6 +196,7 @@ inline STDMETHODIMP IInternetProtocolImpl::SetTargetUnknown(
 
 inline void IInternetProtocolImpl::ReleaseAll()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::ReleaseAll()\n"), GetCurrentThreadId(), this);
 	m_spInternetProtocolUnk.Release();
 	m_spInternetProtocol.Release();
 	m_spInternetProtocolEx.Release();
@@ -216,6 +217,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Start(
 	/* [in] */ DWORD grfPI,
 	/* [in] */ HANDLE_PTR dwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Start()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Start(szUrl, pOIProtSink, pOIBindInfo, grfPI,
@@ -226,6 +228,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Start(
 inline STDMETHODIMP IInternetProtocolImpl::Continue(
 	/* [in] */ PROTOCOLDATA *pProtocolData)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Continue()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Continue(pProtocolData) :
@@ -236,6 +239,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Abort(
 	/* [in] */ HRESULT hrReason,
 	/* [in] */ DWORD dwOptions)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Abort()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Abort(hrReason, dwOptions) :
@@ -245,6 +249,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Abort(
 inline STDMETHODIMP IInternetProtocolImpl::Terminate(
 	/* [in] */ DWORD dwOptions)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Terminate()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Terminate(dwOptions) :
@@ -253,6 +258,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Terminate(
 
 inline STDMETHODIMP IInternetProtocolImpl::Suspend()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Suspend()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Suspend() :
@@ -261,6 +267,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Suspend()
 
 inline STDMETHODIMP IInternetProtocolImpl::Resume()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Resume()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Resume() :
@@ -273,6 +280,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Read(
 	/* [in] */ ULONG cb,
 	/* [out] */ ULONG *pcbRead)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Read()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Read(pv, cb, pcbRead) :
@@ -284,6 +292,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Seek(
 	/* [in] */ DWORD dwOrigin,
 	/* [out] */ ULARGE_INTEGER *plibNewPosition)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Seek()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->Seek(dlibMove, dwOrigin, plibNewPosition) :
@@ -293,6 +302,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Seek(
 inline STDMETHODIMP IInternetProtocolImpl::LockRequest(
 	/* [in] */ DWORD dwOptions)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::LockRequest()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->LockRequest(dwOptions) :
@@ -301,6 +311,7 @@ inline STDMETHODIMP IInternetProtocolImpl::LockRequest(
 
 inline STDMETHODIMP IInternetProtocolImpl::UnlockRequest()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::UnlockRequest()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocol != 0);
 	return m_spInternetProtocol ?
 		m_spInternetProtocol->UnlockRequest() :
@@ -316,6 +327,7 @@ inline STDMETHODIMP IInternetProtocolImpl::StartEx(
 	DWORD grfPI,
 	HANDLE_PTR dwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::StartEx()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolEx != 0);
 	return m_spInternetProtocolEx ?
 		m_spInternetProtocolEx->StartEx(pUri, pOIProtSink, pOIBindInfo, grfPI, dwReserved) :
@@ -332,6 +344,7 @@ inline STDMETHODIMP IInternetProtocolImpl::ParseUrl(
 	/* [out] */ DWORD *pcchResult,
 	/* [in] */ DWORD dwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::ParseUrl()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolInfo != 0);
 	return m_spInternetProtocolInfo ?
 		m_spInternetProtocolInfo->ParseUrl(pwzUrl, ParseAction, dwParseFlags,
@@ -348,6 +361,7 @@ inline STDMETHODIMP IInternetProtocolImpl::CombineUrl(
 	/* [out] */ DWORD *pcchResult,
 	/* [in] */ DWORD dwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::CombineUrl()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolInfo != 0);
 	return m_spInternetProtocolInfo ?
 		m_spInternetProtocolInfo->CombineUrl(pwzBaseUrl, pwzRelativeUrl,
@@ -360,6 +374,7 @@ inline STDMETHODIMP IInternetProtocolImpl::CompareUrl(
 	/* [in] */ LPCWSTR pwzUrl2,
 	/* [in] */ DWORD dwCompareFlags)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::CompareUrl()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolInfo != 0);
 	return m_spInternetProtocolInfo ?
 		m_spInternetProtocolInfo->CompareUrl(pwzUrl1,pwzUrl2, dwCompareFlags) :
@@ -375,6 +390,7 @@ inline STDMETHODIMP IInternetProtocolImpl::QueryInfo(
 	/* [in, out] */ DWORD *pcbBuf,
 	/* [in] */ DWORD dwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::QueryInfo(LPCWSTR, ...)\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolInfo != 0);
 	return m_spInternetProtocolInfo ?
 		m_spInternetProtocolInfo->QueryInfo(pwzUrl, QueryOption, dwQueryFlags,
@@ -386,6 +402,7 @@ inline STDMETHODIMP IInternetProtocolImpl::QueryInfo(
 inline STDMETHODIMP IInternetProtocolImpl::SetPriority(
 	/* [in] */ LONG nPriority)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::SetPriority()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetPriority != 0);
 	return m_spInternetPriority ?
 		m_spInternetPriority->SetPriority(nPriority) :
@@ -395,6 +412,7 @@ inline STDMETHODIMP IInternetProtocolImpl::SetPriority(
 inline STDMETHODIMP IInternetProtocolImpl::GetPriority(
 	/* [out] */ LONG *pnPriority)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::GetPriority()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetPriority != 0);
 	return m_spInternetPriority ?
 		m_spInternetPriority->GetPriority(pnPriority) :
@@ -404,6 +422,7 @@ inline STDMETHODIMP IInternetProtocolImpl::GetPriority(
 // IInternetThreadSwitch
 inline STDMETHODIMP IInternetProtocolImpl::Prepare()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Prepare()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetThreadSwitch != 0);
 	return m_spInternetThreadSwitch ?
 		m_spInternetThreadSwitch->Prepare() :
@@ -412,6 +431,7 @@ inline STDMETHODIMP IInternetProtocolImpl::Prepare()
 
 inline STDMETHODIMP IInternetProtocolImpl::Continue()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::Continue()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetThreadSwitch != 0);
 	return m_spInternetThreadSwitch ?
 		m_spInternetThreadSwitch->Continue() :
@@ -424,6 +444,7 @@ inline STDMETHODIMP IInternetProtocolImpl::QueryOption(
 	/* [in, out] */ LPVOID pBuffer,
 	/* [in, out] */ DWORD *pcbBuf)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::QueryOption()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spWinInetInfo != 0);
 	return m_spWinInetInfo ?
 		m_spWinInetInfo->QueryOption(dwOption, pBuffer, pcbBuf) :
@@ -438,6 +459,7 @@ inline STDMETHODIMP IInternetProtocolImpl::QueryInfo(
 	/* [in, out] */ DWORD *pdwFlags,
 	/* [in, out] */ DWORD *pdwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::QueryInfo(DWORD, ...)\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spWinInetHttpInfo != 0);
 	return m_spWinInetHttpInfo ?
 		m_spWinInetHttpInfo->QueryInfo(dwOption, pBuffer, pcbBuf, pdwFlags,
@@ -454,6 +476,7 @@ inline STDMETHODIMP IInternetProtocolImpl::SetCacheExtension(
 	/* [in, out] */ DWORD *pdwWinInetError,
 	/* [in, out] */	DWORD *pdwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::SetCacheExtension()\n"), GetCurrentThreadId(), this);
 	 ATLASSERT(m_spWinInetCacheHints2 != NULL);
 	 return m_spWinInetCacheHints2 ?
 		 m_spWinInetCacheHints2->SetCacheExtension(pwzExt, pszCacheFile, pcbCacheFile,
@@ -467,6 +490,7 @@ inline STDMETHODIMP IInternetProtocolImpl::SetCacheExtension2(
 	/* [out] */		 DWORD *pdwWinInetError,
 	/* [out] */		 DWORD *pdwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolImpl::SetCacheExtension2()\n"), GetCurrentThreadId(), this);
 	 ATLASSERT(m_spWinInetCacheHints2 != NULL);
 	 return m_spWinInetCacheHints2 ?
 		 m_spWinInetCacheHints2->SetCacheExtension2(pwzExt, pwzCacheFile, pcchCacheFile,
@@ -478,6 +502,7 @@ inline STDMETHODIMP IInternetProtocolImpl::SetCacheExtension2(
 inline HRESULT IInternetProtocolSinkImpl::InitMembers(IInternetProtocolSink *pOIProtSink, IInternetBindInfo *pOIBindInfo,
 	IInternetProtocol* pTargetProtocol)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::InitMembers()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(pOIProtSink != 0);
 	ATLASSERT(pOIBindInfo != 0);
 	ATLASSERT(pTargetProtocol != 0);
@@ -510,6 +535,7 @@ inline HRESULT IInternetProtocolSinkImpl::OnStart(LPCWSTR szUrl,
 	IInternetProtocolSink *pOIProtSink, IInternetBindInfo *pOIBindInfo,
 	DWORD grfPI, HANDLE_PTR dwReserved, IInternetProtocol* pTargetProtocol)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::OnStart()\n"), GetCurrentThreadId(), this);
 	return InitMembers(pOIProtSink, pOIBindInfo, pTargetProtocol);
 }
 
@@ -517,12 +543,14 @@ inline HRESULT IInternetProtocolSinkImpl::OnStartEx(IUri* pUri,
 	IInternetProtocolSink *pOIProtSink, IInternetBindInfo *pOIBindInfo,
 	DWORD grfPI, HANDLE_PTR dwReserved, IInternetProtocol* pTargetProtocol)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::OnStartEx()\n"), GetCurrentThreadId(), this);
 	return InitMembers(pOIProtSink, pOIBindInfo, pTargetProtocol);
 }
 
 
 inline void IInternetProtocolSinkImpl::ReleaseAll()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::ReleaseAll()\n"), GetCurrentThreadId(), this);
 	m_spInternetProtocolSink.Release();
 	m_spServiceProvider.Release();
 	m_spInternetBindInfo.Release();
@@ -533,12 +561,14 @@ inline void IInternetProtocolSinkImpl::ReleaseAll()
 
 inline IServiceProvider* IInternetProtocolSinkImpl::GetClientServiceProvider()
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::GetClientServiceProvider()\n"), GetCurrentThreadId(), this);
 	return m_spServiceProvider;
 }
 
 inline HRESULT IInternetProtocolSinkImpl::QueryServiceFromClient(
 	REFGUID guidService, REFIID riid, void** ppvObject)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::QueryServiceFromClient()\n"), GetCurrentThreadId(), this);
 	HRESULT hr = S_OK;
 	CComPtr<IServiceProvider> spClientProvider = m_spServiceProvider;
 	if (!spClientProvider)
@@ -557,6 +587,7 @@ inline HRESULT IInternetProtocolSinkImpl::QueryServiceFromClient(
 inline STDMETHODIMP IInternetProtocolSinkImpl::Switch(
 	/* [in] */ PROTOCOLDATA *pProtocolData)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::Switch()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolSink != 0);
 	return m_spInternetProtocolSink ?
 		m_spInternetProtocolSink->Switch(pProtocolData) :
@@ -567,6 +598,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::ReportProgress(
 	/* [in] */ ULONG ulStatusCode,
 	/* [in] */ LPCWSTR szStatusText)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::ReportProgress()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolSink != 0);
 	return m_spInternetProtocolSink ?
 		m_spInternetProtocolSink->ReportProgress(ulStatusCode, szStatusText) :
@@ -578,6 +610,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::ReportData(
 	/* [in] */ ULONG ulProgress,
 	/* [in] */ ULONG ulProgressMax)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::ReportData()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolSink != 0);
 	return m_spInternetProtocolSink ?
 		m_spInternetProtocolSink->ReportData(grfBSCF, ulProgress,
@@ -590,6 +623,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::ReportResult(
 	/* [in] */ DWORD dwError,
 	/* [in] */ LPCWSTR szResult)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::ReportResult()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetProtocolSink != 0);
 	return m_spInternetProtocolSink ?
 		m_spInternetProtocolSink->ReportResult(hrResult, dwError, szResult) :
@@ -602,6 +636,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::QueryService(
 	/* [in] */ REFIID riid,
 	/* [out] */ void** ppvObject)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::QueryService()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spServiceProvider != 0);
 	return m_spServiceProvider ?
 		m_spServiceProvider->QueryService(guidService, riid, ppvObject) :
@@ -613,6 +648,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::GetBindInfo(
 	/* [out] */ DWORD *grfBINDF,
 	/* [in, out] */ BINDINFO *pbindinfo)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::GetBindInfo()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetBindInfo != 0);
 	return m_spInternetBindInfo ?
 		m_spInternetBindInfo->GetBindInfo(grfBINDF, pbindinfo) :
@@ -625,6 +661,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::GetBindString(
 	/* [in] */ ULONG cEl,
 	/* [in, out] */ ULONG *pcElFetched)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::GetBindString()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetBindInfo != 0);
 	return m_spInternetBindInfo ?
 		m_spInternetBindInfo->GetBindString(ulStringType, ppwzStr, cEl,
@@ -639,6 +676,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::GetBindInfoEx(
 	DWORD *grfBINDF2,
 	DWORD *pdwReserved)
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::GetBindInfoEx()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spInternetBindInfoEx != 0);
 	return m_spInternetBindInfoEx ?
 		m_spInternetBindInfoEx->GetBindInfoEx(grfBINDF, pbindinfo,
@@ -649,6 +687,7 @@ inline STDMETHODIMP IInternetProtocolSinkImpl::GetIUri(
 	IUri **ppIUri
 )
 {
+	TRACE(_T("[Thread: %d] *%p->IInternetProtocolSinkImpl::GetIUri()\n"), GetCurrentThreadId(), this);
 	ATLASSERT(m_spUriContainer != 0);
 	return m_spUriContainer ?
 		m_spUriContainer->GetIUri(ppIUri) : E_UNEXPECTED;
